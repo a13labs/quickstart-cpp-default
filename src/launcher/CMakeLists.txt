@@ -1,0 +1,23 @@
+set(CPP_APP_LAUNCHER_PRJ "launcher")
+
+# Add all source files recursively
+FILE(GLOB_RECURSE CPP_APP_LAUNCHER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+FILE(GLOB_RECURSE CPP_APP_LAUNCHER_HDR "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
+
+# Add executable
+add_executable(
+  ${CPP_APP_LAUNCHER_PRJ} 
+  ${CPP_APP_LAUNCHER_SRC} 
+  ${CPP_APP_LAUNCHER_HDR}
+)
+
+target_compile_features(
+  ${CPP_APP_LAUNCHER_PRJ} PUBLIC cxx_std_17
+)
+
+install(
+  TARGETS ${CPP_APP_LAUNCHER_PRJ}
+  RUNTIME 
+  DESTINATION ${CMAKE_INSTALL_PREFIX}
+  CONFIGURATIONS All
+)
