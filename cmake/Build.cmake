@@ -20,20 +20,22 @@ function(AddExecutable PRG_NAME)
   endif()
 
   set(APP_CURRENT_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/src/${PRG_NAME}" )
+  set(APP_CURRENT_TARGET ${PRG_NAME})
   
+
   if(NOT IS_DIRECTORY "${APP_CURRENT_SOURCE}")
     message(FATAL_ERROR "Source folder does not exists '${APP_CURRENT_SOURCE}'")
   endif()
 
-  message(STATUS "Adding executable: '${PRG_NAME}' from '${APP_CURRENT_SOURCE}'")
+  message(STATUS "Adding executable: '${APP_CURRENT_TARGET}' from '${APP_CURRENT_SOURCE}'")
   # Add all source files recursively
   FILE(GLOB_RECURSE PRG_SRCS "${APP_CURRENT_SOURCE}/*.cpp")
   FILE(GLOB_RECURSE PRG_HDRS "${APP_CURRENT_SOURCE}/*.hpp")
 
-  add_executable(${PRG_NAME} ${PRG_SRCS} ${PRG_HDRS})
+  add_executable(${APP_CURRENT_TARGET} ${PRG_SRCS} ${PRG_HDRS})
 
   target_compile_features(
-    ${PRG_NAME} 
+    ${APP_CURRENT_TARGET} 
     PUBLIC ${APP_CPP_STD}
   )
 
@@ -44,7 +46,7 @@ function(AddExecutable PRG_NAME)
   endif()
 
   install(
-    TARGETS ${PRG_NAME}
+    TARGETS ${APP_CURRENT_TARGET}
     RUNTIME 
     DESTINATION ${CMAKE_INSTALL_PREFIX}
     CONFIGURATIONS All
