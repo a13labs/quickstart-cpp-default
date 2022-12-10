@@ -1,0 +1,53 @@
+function(AddExecutable PRG_NAME)
+
+  # set(
+  #   options 
+  #   OVERRIDE_TARGET_COMPILE
+  #   OVERRIDE_INSTALL
+  # )
+
+  set(
+    oneValueArgs 
+    CPP_STD 
+  )
+
+  cmake_parse_arguments(CALL_ARGS "" "${oneValueArgs}" "" ${ARGN})
+
+  if (${CALL_ARGS_CPP_STD})
+      set(PRG_CPP_STD ${CALL_ARGS_CPP_STD})
+  else()
+      set(CPP_STD ${APP_LANG_STD})    
+  endif()
+
+  set(APP_CURRENT_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/src/${PRG_NAME}" )
+  
+  if(NOT IS_DIRECTORY "${APP_CURRENT_SOURCE}")
+    message(FATAL_ERROR "Source folder does not exists '${APP_CURRENT_SOURCE}'")
+  endif()
+
+  message(STATUS "Adding executable: '${PRG_NAME}' from '${APP_CURRENT_SOURCE}'")
+  # Add all source files recursively
+  FILE(GLOB_RECURSE PRG_SRCS "${APP_CURRENT_SOURCE}/*.cpp")
+  FILE(GLOB_RECURSE PRG_HDRS "${APP_CURRENT_SOURCE}/*.hpp")
+
+  add_executable(${PRG_NAME} ${PRG_SRCS} ${PRG_HDRS})
+
+  target_compile_features(
+    ${PRG_NAME} 
+    PUBLIC ${APP_CPP_STD}
+  )
+
+  # Include custom configuration if required
+  if(EXISTS "${APP_CURRENT_SOURCE}/config.cmake")
+    message(STATUS "Adding custom configuration: ${APP_CURRENT_SOURCE}/config.cmake")
+    include("${APP_CURRENT_SOURCE}/config.cmake")
+  endif()
+
+  install(
+    TARGETS ${PRG_NAME}
+    RUNTIME 
+    DESTINATION ${CMAKE_INSTALL_PREFIX}
+    CONFIGURATIONS All
+  )
+
+endfunction()

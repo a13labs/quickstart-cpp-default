@@ -1,6 +1,6 @@
 ListTests(UNITTESTS ${CMAKE_CURRENT_SOURCE_DIR})
 
 foreach(UNITTEST ${UNITTESTS})
-    GenerateUnitTest(${UNITTEST})
+    AddUnitTest(${UNITTEST})
 endforeach(UNITTEST ${UNITTESTS})
 

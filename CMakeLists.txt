@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 3.5)
 include(Project.cmake)
 include(cmake/Unittest.cmake)
 include(cmake/ExternalDeps.cmake)
+include(cmake/Build.cmake)
 
 project(
     CPP_APP
@@ -58,7 +59,14 @@ configure_file(config.h.in config.h @ONLY)
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 # Application/Libraries Source
-add_subdirectory(src)
+foreach(APP_LIB ${APP_LIBRARIES})
+    message(STATUS "Adding library: '${APP_LIB}")
+endforeach()
+
+foreach(APP_EXECUTABLE ${APP_EXECUTABLES})
+    message(STATUS "Adding executable: '${APP_EXECUTABLE}")
+    AddExecutable(${APP_EXECUTABLE})
+endforeach()
 
 # Unit Testing
 # https://github.com/google/googletest.git
