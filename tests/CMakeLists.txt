@@ -1,1 +1,6 @@
-add_subdirectory(sample_test)
+ListTests(UNITTESTS ${CMAKE_CURRENT_SOURCE_DIR})
+
+foreach(UNITTEST ${UNITTESTS})
+    GenerateUnitTest(${UNITTEST})
+endforeach(UNITTEST ${UNITTESTS})
+

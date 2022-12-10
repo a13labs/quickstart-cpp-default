@@ -1,14 +1,6 @@
-# Template for a Ogre3D C++ application
+# Template for a empty C++ application
 
-This is a minimal template for creating a Ogre3D application in C++
-
-# Dependencies
-
-## Fedora
-```
-sudo dnf install mesa-libGL-devel mesa-vulkan-devel glslang-devel
-sudo dnf install SDL2-devel libXt-devel libXaw-devel doxygen pugixml-devel
-```
+This is a minimal template for creating application in C++ 
 
 # Folder structure
 
@@ -17,8 +9,6 @@ sudo dnf install SDL2-devel libXt-devel libXaw-devel doxygen pugixml-devel
 ├── 3rdparty
 │   ├── CMakeLists.googletest.in
 │   ├── CMakeLists.googletest.txt
-│   ├── CMakeLists.ogre.in
-│   ├── CMakeLists.ogre.txt
 │   └── < add your 3rd party libraries >
 ├── CMakeLists.txt
 ├── config.h.in

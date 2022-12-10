@@ -1,12 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 
-set(APP_NAME "CPP Application")
-set(APP_DESCRIPTION "CPP Application Template" )
-set(APP_VERSION_MAJOR 0)
-set(APP_VERSION_MINOR 0)
-set(APP_VERSION_RELEASE 1)
-set(APP_SEMANTIC_VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_RELEASE}")
-set(APP_HOMEPAGE_URL "https://example.org")
+include(Project.cmake)
+include(cmake/Unittest.cmake)
+include(cmake/ExternalDeps.cmake)
 
 project(
     CPP_APP
@@ -67,9 +63,22 @@ add_subdirectory(src)
 # Unit Testing
 # https://github.com/google/googletest.git
 if(NOT DEFINED ENV{CPP_APP_NO_TESTS})
-    include(3rdparty/CMakeLists.googletest.txt)
+
+    # Prevent overriding the parent project's compiler/linker
+    # settings on Windows
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    ExternalCMakeGitDep(googletest)
+    
+    # The gtest/gtest_main targets carry header search path
+    # dependencies automatically when using CMake 2.8.11 or
+    # later. Otherwise we have to add them here ourselves.
+    if (CMAKE_VERSION VERSION_LESS 2.8.11)
+        include_directories("${gtest_SOURCE_DIR}/include")
+    endif()
+
     enable_testing()
     include(Dart)
+
     add_subdirectory(tests)
 endif() 
 
