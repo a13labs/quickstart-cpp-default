@@ -42,4 +42,4 @@ function(AddUnitTest UNITTEST)
     COMMAND "${UNITTEST}"
   ) 
 
-endfunction(AddUnitTest)
+endfunction()

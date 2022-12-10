@@ -76,4 +76,4 @@ function(AddExternalProject PRJ_NAME GIT_REPOSITORY GIT_TAG)
         EXCLUDE_FROM_ALL
     )
 
-endfunction(AddExternalProject)
+endfunction()
