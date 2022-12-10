@@ -62,12 +62,24 @@ add_subdirectory(src)
 
 # Unit Testing
 # https://github.com/google/googletest.git
-if(NOT DEFINED ENV{CPP_APP_NO_TESTS})
+
+if(DEFINED ENV{APP_NO_BUILD_TESTS})
+    set(APP_BUILD_TESTS OFF)
+endif()
+
+if(APP_BUILD_TESTS)
 
     # Prevent overriding the parent project's compiler/linker
     # settings on Windows
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-    ExternalCMakeGitDep(googletest)
+
+    AddExternalProject(
+        googletest
+        "https://github.com/google/googletest.git" 
+        "release-1.11.0"
+    )    
+        
+    # ExternalCMakeGitDep(googletest)
     
     # The gtest/gtest_main targets carry header search path
     # dependencies automatically when using CMake 2.8.11 or

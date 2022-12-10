@@ -1,44 +1,79 @@
-function(ExternalCMakeGitDep PKG_NAME)
+function(AddExternalProject PRJ_NAME GIT_REPOSITORY GIT_TAG)
 
-    set (PKG_FILE "3rdparty/${PKG_NAME}.cmake")
-    set (PKG_LOCAL_FOLDER "${PKG_NAME}-download")
-    set (PKG_WORK_DIR "${CMAKE_CURRENT_BINARY_DIR}/${PKG_LOCAL_FOLDER}")
+    set(
+        oneValueArgs 
+        CMAKE_VERSION 
+        CONFIGURE_COMMAND
+        BUILD_COMMAND
+        INSTALL_COMMAND
+        TEST_COMMAND
+    )
+    
+    cmake_parse_arguments(PRJ_ARGS "" "${oneValueArgs}" "" ${ARGN})
 
-    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${PKG_FILE}")
-        message(FATAL_ERROR "Package configuration ${PKG_FILE} does not exists")
+    if (${PRJ_ARGS_CMAKE_VERSION})
+        set(PRJ_CMAKE_VERSION ${PRJ_ARGS_CMAKE_VERSION})
+    else()
+        set(PRJ_CMAKE_VERSION 3.5)    
     endif()
+    
+    if (${PRJ_ARGS_CONFIGURE_COMMAND})
+        set(PRJ_CONFIGURE_COMMAND ${PRJ_ARGS_CONFIGURE_COMMAND})
+    else()
+        set(PRJ_CONFIGURE_COMMAND "")    
+    endif()
+    
+    if (${PRJ_ARGS_BUILD_COMMAND})
+        set(PRJ_BUILD_COMMAND ${PRJ_ARGS_BUILD_COMMAND})
+    else()
+        set(PRJ_BUILD_COMMAND "")    
+    endif()
+    
+    if (${PRJ_ARGS_INSTALL_COMMAND})
+        set(PRJ_INSTALL_COMMAND ${PRJ_ARGS_INSTALL_COMMAND})
+    else()
+        set(PRJ_INSTALL_COMMAND "")    
+    endif()
+    
+    if (${PRJ_ARGS_TEST_COMMAND})
+        set(PRJ_TEST_COMMAND ${PRJ_ARGS_TEST_COMMAND})
+    else()
+        set(PRJ_TEST_COMMAND "")    
+    endif()
+    set (PRJ_WORK_DIR "${CMAKE_CURRENT_BINARY_DIR}/3rdparty/${PRJ_NAME}")
 
     # Download and unpack package at configure time
     configure_file(
-        ${PKG_FILE}
-        ${PKG_LOCAL_FOLDER}/CMakeLists.txt
+        "cmake/ExternalCMakeProj.in.cmake"
+        "3rdparty/${PRJ_NAME}/CMakeLists.txt"
     )
 
+    message(STATUS "Preparing external project '${PRJ_NAME}' from '${GIT_REPOSITORY}', revision '${GIT_TAG}'")
     execute_process(
         COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . 
         RESULT_VARIABLE result
-        WORKING_DIRECTORY ${PKG_WORK_DIR}
+        WORKING_DIRECTORY ${PRJ_WORK_DIR}
     )
 
     if(result)
-        message(FATAL_ERROR "CMake step for package ${PKG_NAME} failed: ${result}")
+        message(FATAL_ERROR "CMake step for package ${PRJ_NAME} failed: ${result}")
     endif()
 
+    message(STATUS "Building project '${PRJ_NAME}'.")
     execute_process(
         COMMAND ${CMAKE_COMMAND} --build . 
         RESULT_VARIABLE result
-        WORKING_DIRECTORY ${PKG_WORK_DIR}
+        WORKING_DIRECTORY ${PRJ_WORK_DIR}
     )
 
     if(result)
-        message(FATAL_ERROR "Build step for ${PKG_NAME} failed: ${result}")
+        message(FATAL_ERROR "Build step for ${PRJ_NAME} failed: ${result}")
     endif()
 
-
     add_subdirectory(
-        ${CMAKE_CURRENT_BINARY_DIR}/${PKG_NAME}-src
-        ${CMAKE_CURRENT_BINARY_DIR}/${PKG_NAME}-build
+        ${CMAKE_CURRENT_BINARY_DIR}/${PRJ_NAME}-src
+        ${CMAKE_CURRENT_BINARY_DIR}/${PRJ_NAME}-build
         EXCLUDE_FROM_ALL
     )
 
-endfunction(ExternalCMakeGitDep)
+endfunction(AddExternalProject)
